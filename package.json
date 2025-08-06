@@ -1,0 +1,9 @@
+{
+  "name": "chat-bidireccional-netlify",
+  "version": "1.0.0",
+  "description": "Bidirectional chat with Pusher and Netlify Functions",
+  "main": "index.js",
+  "dependencies": {
+    "pusher": "^5.0.2"
+  }
+}
