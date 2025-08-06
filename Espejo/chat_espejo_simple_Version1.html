@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Espejo</title>
+    <style>
+        html, body {
+            height: 100dvh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+        body {
+            height: 100dvh;
+            width: 100vw;
+            min-height: 100dvh;
+            min-width: 100vw;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .chat-widget {
+            width: 100vw;
+            height: 100dvh;
+            min-height: 100dvh;
+            min-width: 100vw;
+            max-width: 100vw;
+            max-height: 100dvh;
+            background: white;
+            border-radius: 22px;
+            box-shadow: 0 0 36px 8px #ffd700, 0 0 0 4px #eaeaea;
+            border: 2px solid #eaeaea;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: hidden;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .chat-header {
+            width: 100%;
+            background: linear-gradient(90deg, #e74c3c 60%, #c0392b 100%);
+            color: white;
+            padding: 0 8px;
+            height: 48px;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.09rem;
+            font-weight: 500;
+            letter-spacing: .5px;
+            border-bottom: 2px solid #eaeaea;
+            box-shadow: 0 2px 8px #b02a1e22;
+            text-shadow: 0 1px 2px #b02a1e44;
+        }
+        .chat-header .chat-header-left,
+        .chat-header .chat-header-right {
+            flex: 1 1 0;
+            display: flex;
+            align-items: center;
+            min-width: 0;
+        }
+        .chat-header .chat-header-left {
+            justify-content: flex-start;
+        }
+        .chat-header .chat-header-right {
+            justify-content: flex-end;
+        }
+        .chat-header span {
+            margin: 0 7px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 28px 16px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            scroll-behavior: smooth;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+        .message { display: flex; width: 100%; margin-bottom: 22px;}
+        .message.user { justify-content: flex-end; }
+        .message.external { justify-content: flex-start; }
+        .message-bubble { max-width: 97%; padding: 22px 24px; border-radius: 18px; word-wrap: break-word; font-size: 2rem;}
+        .user .message-bubble { background: #007bff; color: white; font-weight: bold; }
+        .external .message-bubble { background: #d4edda; color: #222; font-weight: 600;}
+        .sender-name { font-size: 1.3rem; opacity: 0.72; font-weight: 700;}
+        .user .sender-name { text-align: right; color: #666;}
+        .external .sender-name { text-align: left; color: #666;}
+        .chat-input {
+            padding: 16px 16px 0 16px;
+            background: white;
+            border-top: 2px solid #e1e8ed;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            align-items: flex-end;
+            padding-bottom: 26px;
+        }
+        .chat-input-row {
+            display: flex;
+            width: 100%;
+            gap: 18px;
+            align-items: flex-end;
+        }
+        .chat-input textarea {
+            flex: 1;
+            padding: 18px 20px;
+            border: 2px solid #ddd;
+            border-radius: 18px;
+            outline: none;
+            font-size: 2rem;
+            resize: none;
+            min-height: 54px;
+            max-height: 120px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+            font-weight: 600;
+        }
+        .chat-input textarea::placeholder {
+            color: #999;
+            opacity: 1;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: .03em;
+        }
+        .chat-input button {
+            border: none;
+            cursor: pointer;
+            font-size: 2rem;
+            font-weight: bold;
+            border-radius: 25px;
+            padding: 18px 28px;
+            margin: 0;
+            transition: background 0.2s;
+        }
+        #sendBtn {
+            background: #007bff;
+            color: white;
+            height: 100%;
+            min-width: 90px;
+            max-width: 160px;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #sendBtn:active {
+            background: #0056b3;
+        }
+        @media (max-width: 600px) {
+          .chat-widget {
+            position: fixed !important;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw !important;
+            height: 100vh !important;
+            min-width: 100vw !important;
+            min-height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            border-radius: 0 !important;
+            z-index: 9999;
+          }
+          body {
+            overflow: hidden !important;
+            height: 100vh !important;
+            min-height: 100vh !important;
+            width: 100vw !important;
+            min-width: 100vw !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          .chat-header {
+            height: 38px;
+            min-height: 38px;
+            font-size: 0.88rem;
+            padding: 0 3px;
+          }
+          .chat-input-row {
+            flex-direction: column;
+            gap: 10px;
+            align-items: stretch;
+          }
+          #userInput {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 48px;
+            font-size: 1.15rem;
+          }
+          #sendBtn {
+            width: 100%;
+            height: 48px;
+            font-size: 1.2rem;
+            margin-left: 0;
+            margin-top: 5px;
+            border-radius: 18px;
+            display: block;
+            flex: unset;
+            max-width: 100%;
+            min-width: 100%;
+            background: #007bff;
+            color: white;
+          }
+          .chat-input button {
+            width: 100%;
+            margin-left: 0;
+            margin-top: 5px;
+            border-radius: 18px;
+            font-size: 1.2rem;
+            height: 48px;
+            padding: 0;
+          }
+          .chat-messages {
+            padding: 14px 4px;
+          }
+          .message-bubble {
+            font-size: 1.08rem !important;
+            padding: 15px 12px;
+          }
+          .sender-name {
+            font-size: 1.1rem;
+          }
+        }
+        @media (min-width: 900px) {
+            .chat-input textarea {
+                font-size: 1.6rem;
+                min-height: 54px;
+                padding: 18px 20px;
+            }
+            .chat-input textarea::placeholder {
+                font-size: 1.6rem;
+            }
+            .chat-input button {
+                font-size: 1.6rem;
+                padding: 18px 28px;
+            }
+            .message-bubble {
+                font-size: 1.25rem;
+            }
+            .sender-name {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-widget">
+        <div class="chat-header">
+            <div class="chat-header-left">
+                <span>💬 Chat Espejo</span>
+            </div>
+            <div class="chat-header-right">
+                <span>Espejo en tiempo real</span>
+            </div>
+        </div>
+        <div class="chat-messages" id="messages"></div>
+        <div class="chat-input" id="chatInput">
+            <div class="chat-input-row">
+                <textarea id="userInput" placeholder="Escribe tu mensaje..."></textarea>
+                <button onclick="sendMessage()" id="sendBtn">Enviar</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // --- Chat Espejo: Simple y sincronizado ---
+        const CACHE_KEY = "chat_espejo_cache";
+        let chatCache = [];
+
+        // Renderiza el historial de mensajes
+        function renderCache() {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = '';
+            chatCache.forEach(msg => {
+                if (msg.type === 'user') addUserMessage(msg.text);
+                else if (msg.type === 'external') addExternalMessage(msg.sender, msg.text);
+            });
+            scrollToBottom();
+        }
+
+        // Guarda el historial en localStorage
+        function saveCache() {
+            localStorage.setItem(CACHE_KEY, JSON.stringify(chatCache));
+        }
+
+        // Carga el historial de localStorage
+        function loadCache() {
+            try {
+                const saved = localStorage.getItem(CACHE_KEY);
+                chatCache = saved ? JSON.parse(saved) : [];
+            } catch (e) { chatCache = []; }
+        }
+
+        // Envía el mensaje propio y sincroniza
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+            addUserMessage(message);
+            chatCache.push({ type: 'user', text: message });
+            saveCache();
+            input.value = '';
+        }
+
+        // Muestra el mensaje propio
+        function addUserMessage(text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.innerHTML = `
+                        <div>
+                            <div class="sender-name">Tú</div>
+                            <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        // Muestra mensaje externo (otro usuario/pantalla)
+        function addExternalMessage(sender, text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message external';
+            messageDiv.innerHTML = `
+                        <div>
+                            <div class="sender-name">${sender}</div>
+                            <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        // Sincroniza en tiempo real entre ventanas/pestañas
+        window.addEventListener('storage', function (event) {
+            if (event.key === CACHE_KEY && event.newValue) {
+                loadCache();
+                renderCache();
+            }
+        });
+
+        function scrollToBottom() {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Inicializa al cargar la app espejo
+        document.addEventListener('DOMContentLoaded', function () {
+            loadCache();
+            renderCache();
+        });
+
+        // Permite enviar con Enter (sin Shift)
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                if (!e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            }
+        });
+    </script>
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script>
+        const PUSHER_KEY = "46e53dfe6f8d93182aaa";
+        const CHANNEL = "chat-duplicado";
+        const EVENT = "nuevo-mensaje";
+
+        // Inicializa Pusher y escucha mensajes bidireccionales
+        const pusher = new Pusher(PUSHER_KEY, { cluster: "us2" });
+        const channel = pusher.subscribe(CHANNEL);
+
+        // Cuando llega un mensaje desde cualquier app, lo mostramos
+        channel.bind(EVENT, function (data) {
+            // IMPORTANTE: Cambia esta línea si tu función de mostrar mensajes tiene otro nombre
+            addExternalMessage(data.sender, data.text);
+            // Si usas chatCache para historial, también agrega esto:
+            chatCache.push({ type: 'external', sender: data.sender, text: data.text });
+            saveCache();
+            renderCache(); // Actualiza la pantalla
+        });
+
+        // Esta función envía el mensaje al backend para que lo duplique en ambas apps
+        function sendBidirectionalMessage(message) {
+            fetch("/.netlify/functions/bidireccional", {
+                method: "POST",
+                body: JSON.stringify({
+                    sender: "Tú", // O el nombre que quieras mostrar
+                    text: message,
+                    clientId: "espejo" // Puedes cambiarlo por "principal" si es la otra app
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+        }
+
+        // Modifica tu función de enviar para que use la bidireccionalidad
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+            addUserMessage(message); // Tu mensaje aparece en tu pantalla
+            chatCache.push({ type: 'user', text: message });
+            saveCache();
+            input.value = '';
+
+            // Aquí va el envío por Pusher
+            sendBidirectionalMessage(message);
+        }
+    </script>
+</body>
+</html>
