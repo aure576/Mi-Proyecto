@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Decoración con Cemento Pulido - Chat</title>
+    <style>
+        html, body {
+            height: 100dvh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+
+        body {
+            height: 100dvh;
+            width: 100vw;
+            min-height: 100dvh;
+            min-width: 100vw;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        @keyframes goldenFlash {
+            0% {
+                box-shadow: 0 0 36px 8px #ffd700, 0 0 0 4px #eaeaea;
+            }
+
+            10% {
+                box-shadow: 0 0 80px 24px #ffe066, 0 0 0 4px #ffe066;
+            }
+
+            20% {
+                box-shadow: 0 0 130px 40px #fff700, 0 0 0 4px #fff700;
+            }
+
+            30% {
+                box-shadow: 0 0 160px 60px #fff8dc, 0 0 0 6px #ffd700;
+            }
+
+            40% {
+                box-shadow: 0 0 90px 18px #ffd700, 0 0 0 4px #ffe066;
+            }
+
+            50% {
+                box-shadow: 0 0 36px 8px #ffd700, 0 0 0 4px #eaeaea;
+            }
+
+            60% {
+                box-shadow: 0 0 36px 8px #ffd700, 0 0 0 4px #eaeaea;
+            }
+
+            70% {
+                box-shadow: 0 0 80px 24px #ffe066, 0 0 0 4px #ffe066;
+            }
+
+            80% {
+                box-shadow: 0 0 130px 40px #fff700, 0 0 0 4px #fff700;
+            }
+
+            90% {
+                box-shadow: 0 0 36px 8px #ffd700, 0 0 0 4px #eaeaea;
+            }
+
+            100% {
+                box-shadow: 0 0 36px 8px #ffd700, 0 0 0 4px #eaeaea;
+            }
+        }
+
+        .chat-widget {
+            width: 100vw;
+            height: 100dvh;
+            min-height: 100dvh;
+            min-width: 100vw;
+            max-width: 100vw;
+            max-height: 100dvh;
+            background: white;
+            border-radius: 22px;
+            animation: goldenFlash 2.5s cubic-bezier(0.6,0.2,0.2,1) infinite alternate;
+            box-shadow: 0 0 36px 8px #ffd700, 0 0 0 4px #eaeaea;
+            border: 2px solid #eaeaea;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding-bottom: env(safe-area-inset-bottom, 0);
+            padding-top: env(safe-area-inset-top, 0);
+            padding-left: env(safe-area-inset-left, 0);
+            padding-right: env(safe-area-inset-right, 0);
+            /* ARREGLO: para el borde rojo visual */
+            position: relative;
+        }
+            /* ARREGLO: marco rojo con esquinas redondeadas usando pseudo-elemento */
+            .chat-widget::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 22px;
+                pointer-events: none;
+                border-style: solid;
+                border-width: 3px;
+                border-color: #e74c3c;
+                z-index: 2;
+            }
+
+        .chat-header {
+            width: 100%;
+            background: linear-gradient(90deg, #e74c3c 60%, #c0392b 100%);
+            color: white;
+            padding: 0 8px;
+            height: 48px;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.09rem;
+            font-weight: 500;
+            letter-spacing: .5px;
+            border-bottom: 2px solid #eaeaea;
+            box-shadow: 0 2px 8px #b02a1e22;
+            text-shadow: 0 1px 2px #b02a1e44;
+        }
+
+            .chat-header .chat-header-left,
+            .chat-header .chat-header-right {
+                flex: 1 1 0;
+                display: flex;
+                align-items: center;
+                min-width: 0;
+            }
+
+            .chat-header .chat-header-left {
+                justify-content: flex-start;
+            }
+
+            .chat-header .chat-header-right {
+                justify-content: flex-end;
+            }
+
+            .chat-header .chat-header-center {
+                flex: 0 0 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 48px;
+                height: 48px;
+            }
+
+            .chat-header .trash-btn {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+                margin: 0;
+                height: 40px;
+                width: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+                .chat-header .trash-btn:active svg {
+                    filter: brightness(0.7);
+                }
+
+                .chat-header .trash-btn svg {
+                    width: 28px;
+                    height: 28px;
+                    fill: #fff;
+                    transition: filter 0.2s;
+                }
+
+            .chat-header span {
+                margin: 0 7px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+        #clearBtn {
+            display: none;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 28px 16px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            scroll-behavior: smooth;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .message {
+            display: flex;
+            width: 100%;
+            margin-bottom: 22px;
+        }
+
+            .message.user {
+                justify-content: flex-end;
+            }
+
+            .message.bot {
+                justify-content: flex-start;
+            }
+
+            .message.external {
+                justify-content: flex-start;
+            }
+
+        .message-bubble {
+            max-width: 97%;
+            padding: 22px 24px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            font-size: 2rem;
+        }
+
+        .user .message-bubble {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .bot .message-bubble {
+            background: #fff;
+            color: #222;
+            border: 2px solid #e1e8ed;
+            font-weight: 600;
+            font-size: 1.13rem;
+        }
+
+        .external .message-bubble {
+            background: #d4edda;
+            color: #222;
+            font-weight: 600;
+        }
+
+        .sender-name {
+            font-size: 1.3rem;
+            opacity: 0.72;
+            font-weight: 700;
+        }
+
+        .user .sender-name {
+            text-align: right;
+            color: #666;
+        }
+
+        .bot .sender-name, .external .sender-name {
+            text-align: left;
+            color: #666;
+        }
+        /* AJUSTE AUTORIZADO: Banda inferior dos líneas más estrecha */
+        .chat-input {
+            padding: 16px 16px 0 16px;
+            background: white;
+            border-top: 2px solid #e1e8ed;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            align-items: flex-end;
+            padding-bottom: calc(env(safe-area-inset-bottom, 0) + 26px);
+        }
+
+        .red-empty-bar {
+            width: 100%;
+            height: 36px;
+            background: linear-gradient(90deg, #e74c3c 60%, #c0392b 100%);
+        }
+
+        .chat-bottom-space {
+            height: 2.1em;
+            background: white;
+            width: 100%;
+        }
+        /* FIN AJUSTE AUTORIZADO */
+        .chat-input-row {
+            display: flex;
+            width: 100%;
+            gap: 18px;
+            align-items: flex-end;
+        }
+
+        .chat-input textarea {
+            flex: 1;
+            padding: 18px 20px;
+            border: 2px solid #ddd;
+            border-radius: 18px;
+            outline: none;
+            font-size: 2rem;
+            resize: none;
+            min-height: 54px;
+            max-height: 120px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+            font-weight: 600;
+        }
+
+            .chat-input textarea::placeholder {
+                color: #999;
+                opacity: 1;
+                font-size: 0.85rem;
+                font-weight: 500;
+                letter-spacing: .03em;
+            }
+
+        .chat-input button {
+            border: none;
+            cursor: pointer;
+            font-size: 2rem;
+            font-weight: bold;
+            border-radius: 25px;
+            padding: 18px 28px;
+            margin: 0;
+            transition: background 0.2s;
+        }
+
+        #sendBtn {
+            background: #007bff;
+            color: white;
+            height: 100%;
+            min-width: 90px;
+            max-width: 160px;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            #sendBtn:active {
+                background: #0056b3;
+            }
+
+        .blank-lines {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .chat-widget {
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100vw !important;
+                height: 100vh !important;
+                min-width: 100vw !important;
+                min-height: 100vh !important;
+                max-width: 100vw !important;
+                max-height: 100vh !important;
+                border-radius: 0 !important;
+                z-index: 9999;
+            }
+
+            body {
+                overflow: hidden !important;
+                height: 100vh !important;
+                min-height: 100vh !important;
+                width: 100vw !important;
+                min-width: 100vw !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .chat-header {
+                height: 38px;
+                min-height: 38px;
+                font-size: 0.88rem;
+                padding: 0 3px;
+            }
+
+                .chat-header .chat-header-center {
+                    min-width: 38px;
+                    height: 38px;
+                }
+
+            .chat-input-row {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+
+            #userInput {
+                width: 100%;
+                box-sizing: border-box;
+                min-height: 48px;
+                font-size: 1.15rem;
+            }
+
+            #sendBtn {
+                width: 100%;
+                height: 48px;
+                font-size: 1.2rem;
+                margin-left: 0;
+                margin-top: 5px;
+                border-radius: 18px;
+                display: block;
+                flex: unset;
+                max-width: 100%;
+                min-width: 100%;
+                background: #007bff;
+                color: white;
+            }
+
+            .chat-input button {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 5px;
+                border-radius: 18px;
+                font-size: 1.2rem;
+                height: 48px;
+                padding: 0;
+            }
+
+            .chat-bottom-space {
+                height: 1.4em;
+            }
+
+            .chat-messages {
+                padding: 14px 4px;
+            }
+
+            .message-bubble {
+                font-size: 1.08rem !important;
+                padding: 15px 12px;
+            }
+
+            .bot .message-bubble {
+                font-size: 1.08rem !important;
+            }
+
+            .sender-name {
+                font-size: 1.1rem;
+            }
+            /* AJUSTE AUTORIZADO en móvil */
+            .red-empty-bar {
+                height: 26px !important;
+            }
+
+            .chat-input {
+                padding-top: 8px !important;
+                padding-bottom: calc(env(safe-area-inset-bottom, 0) + 15px) !important;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .chat-input textarea {
+                font-size: 1.6rem;
+                min-height: 54px;
+                padding: 18px 20px;
+            }
+
+                .chat-input textarea::placeholder {
+                    font-size: 1.6rem;
+                }
+
+            .chat-input button {
+                font-size: 1.6rem;
+                padding: 18px 28px;
+            }
+
+            .message-bubble {
+                font-size: 1.25rem;
+            }
+
+            .bot .message-bubble {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-widget">
+        <div class="chat-header">
+            <div class="chat-header-left">
+                <span>Decoración con Cemento Pulido</span>
+            </div>
+            <div class="chat-header-center">
+                <button class="trash-btn" onclick="limpiarChat()" title="Limpiar Chat">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 3v1H4v2h16V4h-5V3H9zm-2 5v12c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V8H7zm2 2h2v8h-2v-8zm4 0h-2v8h2v-8z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="chat-header-right">
+                <span>📞 787-536-8962 • Puerto Rico</span>
+            </div>
+        </div>
+        <div class="chat-messages" id="messages"></div>
+        <div class="chat-input" id="chatInput">
+            <div class="chat-input-row">
+                <textarea id="userInput" placeholder="Escribe tu consulta..."></textarea>
+                <button onclick="sendMessage()" id="sendBtn">Enviar</button>
+            </div>
+            <div class="red-empty-bar"></div>
+        </div>
+        <div class="chat-bottom-space"></div>
+    </div>
+    <div class="blank-lines"></div>
+    <script>
+        // --- Código JS original completo ---
+        function requestFullscreen() {
+            const docElm = document.documentElement;
+            if (docElm.requestFullscreen) docElm.requestFullscreen();
+            else if (docElm.webkitRequestFullscreen) docElm.webkitRequestFullscreen();
+            else if (docElm.mozRequestFullScreen) docElm.mozRequestFullScreen();
+            else if (docElm.msRequestFullscreen) docElm.msRequestFullscreen();
+        }
+        window.addEventListener('DOMContentLoaded', function () {
+            setTimeout(requestFullscreen, 500);
+            fixViewportHeight();
+        });
+
+        // --- AJUSTE AUTORIZADO: Detecta móvil y pone el iframe o chat-widget fullscreen ---
+        (function () {
+            function isMobileDevice() {
+                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|IEMobile/i.test(navigator.userAgent);
+            }
+            function fullscreenIframeOrChat() {
+                if (window.self !== window.top) {
+                    var iframeElement = window.frameElement;
+                    if (isMobileDevice() && iframeElement && iframeElement.requestFullscreen) {
+                        iframeElement.requestFullscreen().catch(() => { });
+                    }
+                } else {
+                    var widget = document.querySelector('.chat-widget');
+                    if (isMobileDevice() && widget && widget.requestFullscreen) {
+                        widget.requestFullscreen().catch(() => { });
+                    }
+                }
+            }
+            window.addEventListener('DOMContentLoaded', function () {
+                setTimeout(fullscreenIframeOrChat, 800);
+            });
+        })();
+
+        function fixViewportHeight() {
+            if (window.visualViewport) {
+                const chatWidget = document.querySelector('.chat-widget');
+                const vh = window.visualViewport.height;
+                chatWidget.style.height = vh + 'px';
+                chatWidget.style.maxHeight = vh + 'px';
+            }
+        }
+        window.addEventListener('resize', fixViewportHeight);
+        window.addEventListener('orientationchange', fixViewportHeight);
+        document.getElementById('userInput').addEventListener('focus', function () {
+            setTimeout(fixViewportHeight, 300);
+        });
+
+        function bienvenidaTTSUnaVez() {
+            if (!('speechSynthesis' in window)) return;
+            if (localStorage.getItem('ttsBienvenidaLeida') === '1') return;
+            localStorage.setItem('ttsBienvenidaLeida', '1');
+            window.speechSynthesis.cancel();
+            const texto =
+                "¡Hola! Dame las medidas de tu pared, alto y ancho, para darte un estimado para la decoración en cemento pulido. " +
+                "Puedes escribir las cantidades en palabras o números y en cualquier tipo de medida. Ejemplo: en pulgadas, en pies, en metros, en centímetros.";
+            let utter = new SpeechSynthesisUtterance(texto);
+            utter.lang = 'es-ES';
+            utter.rate = 1;
+            utter.pitch = 1;
+            utter.volume = 1;
+            function setVoice() {
+                const voces = window.speechSynthesis.getVoices();
+                for (const v of voces) {
+                    if (v.lang === 'es-ES') { utter.voice = v; break; }
+                    if (!utter.voice && v.lang.startsWith('es')) { utter.voice = v; }
+                }
+            }
+            if (window.speechSynthesis.getVoices().length === 0) {
+                window.speechSynthesis.addEventListener('voiceschanged', function () {
+                    setVoice();
+                    window.speechSynthesis.speak(utter);
+                }, { once: true });
+            } else {
+                setVoice();
+                window.speechSynthesis.speak(utter);
+            }
+        }
+        window.addEventListener('DOMContentLoaded', function () {
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            if (isAndroid) {
+                setTimeout(bienvenidaTTSUnaVez, 800);
+            }
+        });
+
+        const apiKey = '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';
+        const prompt = `Eres Aurelio Rodríguez, decorador especialista en cemento pulido en Puerto Rico.
+Siempre responde de forma amable y cordial, prohibido revelar que eres una inteligencia artificial, porque eres especialista en decoración con cemento pulido.
+Empresa: Decoración de Paredes en Cemento Pulido
+Teléfono: 787-536-8962
+Ubicación: San Juan, Puerto Rico
+Precio unitario: $12 por pie cuadrado (FIJO)
+ÁREA DE SERVICIO:
+Solo trabajamos en San Juan y pueblos cercanos, específicamente: Toa Baja, Bayamón, Guaynabo, Trujillo Alto, Carolina PR, Canóvanas, Río Grande, Gurabo, Las Piedras.
+Si el usuario pregunta por otro pueblo, responde amablemente que lo lamentas, pero no trabajas en esa área. Sin embargo, sugiere siempre comunicarse por WhatsApp o llamada al 787-536-8962 para comprobar si realmente brindamos servicio en esa zona, ya que puede ser un barrio dentro de las áreas cubiertas.
+Si el usuario menciona un barrio o zona dentro de estos pueblos, comunícale de forma cordial que para mayor claridad en la información debe comunicarse por WhatsApp o llamada al 787-536-8962, ya que el barrio podría estar dentro del área de servicio.
+PRECIO Y ESPECIALES:
+Si el usuario pregunta por el precio, informa amablemente que el precio puede estar en especial o variar según el proyecto, por lo que debe comunicarse directamente con Aurelio Rodríguez por WhatsApp o llamada al 787-536-8962 para cotizar y confirmar el precio actualizado.
+REGLAS PARA COTIZACIÓN Y CONVERSIÓN DE MEDIDAS:
+- Si el usuario escribe cantidades en palabras (ejemplo: uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve, diez, once, doce, etc.), conviértelas a números antes de calcular.
+- Detecta automáticamente medidas escritas en cualquier formato (ejemplo: "tres columnas de 11x1", "dos paredes de ocho por diez", "cinco paredes 7x12", "once columnas de tres por cuatro").
+- Interpreta frases como:
+            - "tres columnas de 11x1" como 3 × (11 × 1) pies²
+            - "dos columnas de tres por cinco" como 2 × (3 × 5) pies²
+            - "cuatro paredes de 8x10" como 4 × (8 × 10) pies²
+            - "once columnas de tres por cuatro" como 11 × (3 × 4) pies²
+            - "cuatro paredes de ocho por diez" como 4 × (8 × 10) pies²
+            - "3x11x11" como 3 × (11 × 11) pies²
+- Si el usuario da medidas en otras unidades (pulgadas, metros, centímetros, etc.), primero convierte cada medida (alto y ancho) a pies antes de calcular el área en pies cuadrados.
+          - Ejemplo: “2 paredes de 96 pulgadas por 104 pulgadas” = convierte 96 pulgadas y 104 pulgadas a pies, luego calcula el área en pies².
+          - Ejemplo: “pared 1: 250 centímetros por 2.1 metros” = convierte ambas medidas a pies, luego calcula el área en pies².
+          - Conversión:
+            - 1 pulgada = 0.083333 pies
+            - 1 centímetro = 0.0328084 pies
+            - 1 metro = 3.28084 pies
+- El usuario puede dar cantidades separadas (unidades, lista de paredes), reconoce el formato y calcula cada área por separado, suma el total.
+- Realiza el cálculo: cantidad × (alto × ancho en pies) × $12
+- Suma todos los costos calculados por separado y da el total general si hay varias medidas.
+Formato obligatorio de respuesta:
+Esta es la cotización:
+Área por unidad: [alto en pies] x [ancho en pies] = [área unidad] pies²
+Cantidad de unidades: [cantidad]
+Área total: [cantidad] x [área unidad] = [área total] pies²
+Total cotizado: $[precio total]
+Para confirmar su interés, comuníquese por WhatsApp o llamada al 787-536-8962
+Ejemplo:
+Si el usuario dice "2 paredes de 96 pulgadas por 104 pulgadas":
+Convierte: 96 pulgadas = 8 pies, 104 pulgadas = 8.666 pies
+Área por unidad: 8 x 8.666 = 69.33 pies²
+Cantidad de unidades: 2
+Área total: 2 x 69.33 = 138.66 pies²
+Total cotizado: $1,663.92
+Para confirmar su interés, comuníquese por WhatsApp o llamada al 787-536-8962
+Si el usuario dice "pared 1: 250 centímetros por 2.1 metros":
+Convierte: 250 cm = 8.202 pies, 2.1 m = 6.889 pies
+Área por unidad: 8.202 x 6.889 = 56.57 pies²
+Cantidad de unidades: 1
+Área total: 1 x 56.57 = 56.57 pies²
+Total cotizado: $678.84
+Para confirmar su interés, comuníquese por WhatsApp o llamada al 787-536-8962
+Si el usuario no da medidas, informa servicios y da el teléfono.
+No cotices pisos ni techos, solo paredes verticales.
+Si el usurio da como area a cotizar solo una parte de la medeida, ejemplo: 10000 cm ha la conversion a pies y luego da la cotizacion.
+Si la cantidad a convertir esta en factores, el resultado se le agrega: pies².
+Si el usurio no indica numero de unidades a cotizar, entonces cotiza lo que te dio.
+Para toda cotizacion la unica informacio publica es la que va despues de:
+Esta es la cotización:, la informacion restante no se publica.
+ATENCIÓN:
+- Si el usuario solicita información, acciones o ayuda sobre temas NO relacionados con la empresa, decoración o cemento pulido (por ejemplo: trámites, recetas, soporte técnico, ventas de otros productos, consultas legales, etc.), responde siempre de manera amable y cordial, pero explica que solo puedes ayudar en temas de decoración en cemento pulido.
+- Redirige amablemente al cliente al tema decorativo e invítalo a consultar sobre servicios, cotizaciones o dudas de decoración de paredes en cemento pulido.
+`;
+        const CACHE_KEY = "chat_cache_inicio";
+        let chatCache = [];
+        function renderCache() {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = '';
+            if (chatCache.length === 0) {
+                addBotMessage('Aurelio Rodríguez',
+                    `¡Hola! Dame las medidas de tu pared (alto y ancho) para darte un estimado para La Decoración en cemento pulido.<br>
+                        Puedes escribir cantidades en palabras o números y en cualquier tipo de medida, ejemplo: en pies, en metro, en pulgadas, en centimetro.`);
+            } else {
+                chatCache.forEach(msg => {
+                    if (msg.type === 'user') addUserMessage(msg.text);
+                    else if (msg.type === 'bot') addBotMessage(msg.sender, msg.text);
+                    else if (msg.type === 'external') addExternalMessage(msg.sender, msg.text);
+                });
+            }
+        }
+        function scrollCentralizado() {
+            const messagesDiv = document.getElementById('messages');
+            setTimeout(() => {
+                const visible = messagesDiv.clientHeight;
+                const contenido = messagesDiv.scrollHeight;
+                if (contenido > visible) {
+                    messagesDiv.scrollTop = (contenido - visible) / 2;
+                } else {
+                    messagesDiv.scrollTop = 0;
+                }
+            }, 150);
+        }
+        function saveCache() {
+            localStorage.setItem(CACHE_KEY, JSON.stringify(chatCache));
+        }
+        function loadCache() {
+            try {
+                const saved = localStorage.getItem(CACHE_KEY);
+                chatCache = saved ? JSON.parse(saved) : [];
+            } catch (e) { chatCache = []; }
+        }
+        let isProcessing = false;
+        function sendMessage() {
+            if (isProcessing) return;
+            const input = document.getElementById('userInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const message = input.value.trim();
+            if (!message) return;
+            isProcessing = true;
+            addUserMessage(message);
+            chatCache.push({ type: 'user', text: message });
+            saveCache();
+            input.value = '';
+            sendBtn.disabled = true;
+            sendBtn.textContent = '⏳';
+            addTypingMessage();
+            localStorage.setItem('mensaje_chat', JSON.stringify({
+                sender: 'Inicio',
+                text: message,
+                time: Date.now()
+            }));
+            fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o',
+                    messages: [
+                        { role: 'system', content: prompt },
+                        { role: 'user', content: message }
+                    ],
+                    max_tokens: 400,
+                    temperature: 0.3
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    removeTypingMessage();
+                    let respuesta = '';
+                    if (data.choices && data.choices[0] && data.choices[0].message) {
+                        respuesta = data.choices[0].message.content;
+                        addBotMessage('Aurelio AI', respuesta);
+                        chatCache.push({ type: 'bot', sender: 'Aurelio AI', text: respuesta });
+                        saveCache();
+                        localStorage.setItem('mensaje_chat', JSON.stringify({
+                            sender: 'Aurelio AI',
+                            text: respuesta,
+                            time: Date.now()
+                        }));
+                        scrollToBottom();
+                    } else {
+                        addBotMessage('Aurelio AI', '❌ Error en la respuesta. Para confirmar su interés, comuníquese por WhatsApp o llamada al 787-536-8962.');
+                        chatCache.push({ type: 'bot', sender: 'Aurelio AI', text: '❌ Error en la respuesta. Para confirmar su interés, comuníquese por WhatsApp o llamada al 787-536-8962.' });
+                        saveCache();
+                        scrollToBottom();
+                    }
+                })
+                .catch(() => {
+                    removeTypingMessage();
+                    addBotMessage('Aurelio AI', '❌ Error de conexión. Para confirmar su interés, comuníquese por WhatsApp o llamada al 787-536-8962.');
+                    chatCache.push({ type: 'bot', sender: 'Aurelio AI', text: '❌ Error de conexión. Para confirmar su interés, comuníquese por WhatsApp o llamada al 787-536-8962.' });
+                    saveCache();
+                    scrollToBottom();
+                })
+                .finally(() => {
+                    isProcessing = false;
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Enviar';
+                });
+        }
+        function addUserMessage(text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.innerHTML = `
+                        <div>
+                            <div class="sender-name">Tú</div>
+                            <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
+        function addBotMessage(sender, text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            messageDiv.innerHTML = `
+                        <div>
+                            <div class="sender-name">${sender}</div>
+                            <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
+        function addExternalMessage(sender, text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message external';
+            messageDiv.innerHTML = `
+                        <div>
+                            <div class="sender-name">${sender}</div>
+                            <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
+        function addTypingMessage() {
+            const messagesDiv = document.getElementById('messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot typing';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+                        <div>
+                            <div class="sender-name">Aurelio AI</div>
+                            <div class="message-bubble">Escribiendo...</div>
+                        </div>
+                    `;
+            messagesDiv.appendChild(typingDiv);
+            scrollToBottom();
+        }
+        function removeTypingMessage() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) typingIndicator.remove();
+        }
+        function scrollToBottom() {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        function limpiarChat() {
+            chatCache = [];
+            saveCache();
+            renderCache();
+            scrollCentralizado();
+        }
+        window.addEventListener('storage', function (event) {
+            if (event.key === 'mensaje_chat' && event.newValue) {
+                try {
+                    const data = JSON.parse(event.newValue);
+                    if (data && data.text && data.sender && data.sender !== 'Inicio' && data.sender !== 'Aurelio AI') {
+                        addExternalMessage(data.sender, data.text);
+                        chatCache.push({ type: 'external', sender: data.sender, text: data.text });
+                        saveCache();
+                    }
+                } catch (e) { }
+            }
+        });
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && !isProcessing) {
+                if (!e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            loadCache();
+            renderCache();
+            scrollCentralizado();
+        });
+    </script>
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script>
+        const PUSHER_KEY = "46e53dfe6f8d93182aaa";
+        const CHANNEL = "chat-duplicado";
+        const EVENT = "nuevo-mensaje";
+
+        // Inicializa Pusher y escucha mensajes bidireccionales
+        const pusher = new Pusher(PUSHER_KEY, { cluster: "us2" });
+        const channel = pusher.subscribe(CHANNEL);
+
+        // Cuando llega un mensaje desde cualquier app, lo mostramos
+        channel.bind(EVENT, function (data) {
+            // IMPORTANTE: Cambia esta línea si tu función de mostrar mensajes tiene otro nombre
+            addExternalMessage(data.sender, data.text);
+            // Si usas chatCache para historial, también agrega esto:
+            chatCache.push({ type: 'external', sender: data.sender, text: data.text });
+            saveCache();
+            renderCache(); // Actualiza la pantalla
+        });
+
+        // Esta función envía el mensaje al backend para que lo duplique en ambas apps
+        function sendBidirectionalMessage(message) {
+            fetch("/.netlify/functions/bidireccional", {
+                method: "POST",
+                body: JSON.stringify({
+                    sender: "Tú", // O el nombre que quieras mostrar
+                    text: message,
+                    clientId: "espejo" // Puedes cambiarlo por "principal" si es la otra app
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+        }
+
+        // Modifica tu función de enviar para que use la bidireccionalidad
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+            addUserMessage(message); // Tu mensaje aparece en tu pantalla
+            chatCache.push({ type: 'user', text: message });
+            saveCache();
+            input.value = '';
+
+            // Aquí va el envío por Pusher
+            sendBidirectionalMessage(message);
+        }
+    </script>
+</body>
+</html>
